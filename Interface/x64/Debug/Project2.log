@@ -1,0 +1,11 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(387,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (Project2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  DetectFist.cpp
+c:\users\scottstolarski\desktop\myobandinterface\myo-sdk-win-0.9.0\include\myo\cxx\detail\throwonerror.hpp(39): warning C4297: 'myo::ThrowOnError::~ThrowOnError': function assumed not to throw an exception but does
+  c:\users\scottstolarski\desktop\myobandinterface\myo-sdk-win-0.9.0\include\myo\cxx\detail\throwonerror.hpp(39): note: destructor or deallocator has a (possibly implicit) non-throwing exception specification
+c:\users\scottstolarski\desktop\myobandinterface\myo-sdk-win-0.9.0\include\myo\cxx\detail\throwonerror.hpp(45): warning C4297: 'myo::ThrowOnError::~ThrowOnError': function assumed not to throw an exception but does
+  c:\users\scottstolarski\desktop\myobandinterface\myo-sdk-win-0.9.0\include\myo\cxx\detail\throwonerror.hpp(45): note: destructor or deallocator has a (possibly implicit) non-throwing exception specification
+c:\users\scottstolarski\desktop\myobandinterface\interface\detectfist.cpp(82): error C2065: 'ClientSocket': undeclared identifier
+c:\users\scottstolarski\desktop\myobandinterface\interface\detectfist.cpp(82): error C2228: left of '.sendSignal' must have class/struct/union
+  c:\users\scottstolarski\desktop\myobandinterface\interface\detectfist.cpp(82): note: type is 'unknown-type'
+  ClientSocket.cpp
+  Generating Code...

@@ -4,18 +4,16 @@
 #include <stdio.h>
 
 #pragma comment(lib, "Ws2_32.lib")
-#define DEFAULT_PORT  "5070"
-#define Default_Address  "127.0.0.1"
 
-class ClientSocket {
-
-	WSADATA wsaData;
-
-	//Init Winsock Library
-	int iResult;
-
+class ClientSocket{
 public:
+	
 	int sendSignal() {
+
+		WSADATA wsaData;
+
+		//Init Winsock Library
+		int iResult;
 		// Initialize Winsock
 		iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 		if (iResult != 0) {
@@ -33,7 +31,7 @@ public:
 		hints.ai_protocol = IPPROTO_TCP;
 		//std::cout << hints.ai_family << std::endl;
 
-		iResult = getaddrinfo(Default_Address, DEFAULT_PORT, &hints, &result);
+		iResult = getaddrinfo("192.168.0.254", "5070", &hints, &result);
 		if (iResult != 0) {
 
 			printf("getaddrinfo failed: %d\n", iResult);
@@ -85,7 +83,7 @@ public:
 		}
 
 
-		std::string sendbuf = "this is a test";
+		std::string sendbuf = "Holy Shit it works!!";
 
 		// Send an initial buffer
 		iResult = send(ConnectSocket, sendbuf.c_str(), (int)strlen(sendbuf.c_str()), 0);

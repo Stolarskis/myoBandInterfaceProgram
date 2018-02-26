@@ -77,9 +77,9 @@ public:
 		std::string currPose = currentPose.toString();
 
 		if (currPose == "fist") {
+			
 
 			std::cout << "FIST DETECTED" << std::endl;
-			//ClientSocket.sendSignal();
 			return true;
 		}
 
@@ -129,7 +129,7 @@ int main(int argc, char** argv)
 			bool check = false;
 			check = collector.DetectPose();
 			if (check == true) {
-				//ClientSocket.sendSignal();
+				ClientSocket 
 				break;
 			}
 		}
