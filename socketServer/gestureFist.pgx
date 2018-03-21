@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="gestureFist">
+    <Code><![CDATA[begin
+    if (bClawClosed == false)
+      close(tClaw)
+      putln("Fist Closed")
+      bClawClosed = true
+    elseIf (bClawClosed == true)
+      open(tClaw)
+      putln("Fist Opened")
+      bClawClosed = false
+    endIf
+end]]></Code>
+  </Program>
+</Programs>
