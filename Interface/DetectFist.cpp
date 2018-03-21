@@ -3,15 +3,12 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>
-#include <iomanip>
 #include <stdexcept>
 #include <string>
 #include <algorithm>
-#include <winsock2.h>
 #include  <iostream>
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #include <stdio.h>
+#include "clientSide.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 #define PORT 8080
@@ -25,7 +22,7 @@
 class DetectFist : public myo::DeviceListener {
 public:
 	DetectFist()
-		: onArm(false), isUnlocked(false), currentPose()
+		: onArm(false), isUnlocked(false), roll_w(0), pitch_w(0), yaw_w(0), currentPose(), prev_pitch(100), prev_roll(300), prev_yaw(200)
 	{
 	}
 
@@ -34,8 +31,33 @@ public:
 	{
 		// We've lost a Myo.
 		// Let's clean up some leftover state.
+		roll_w = 0;
+		pitch_w = 0;
+		yaw_w = 0;
+		prev_roll = 0;
+		prev_yaw = 0;
+		prev_pitch = 0;
 		onArm = false;
 		isUnlocked = false;
+	}
+
+	void onOrientationData(myo::Myo* myo, uint64_t timestamp, const myo::Quaternion<float>& quat)
+	{
+		using std::atan2;
+		using std::asin;
+		using std::sqrt;
+		using std::max;
+		using std::min;
+		// Calculate Euler angles (roll, pitch, and yaw) from the unit quaternion.
+		float roll = atan2(2.0f * (quat.w() * quat.x() + quat.y() * quat.z()),
+			1.0f - 2.0f * (quat.x() * quat.x() + quat.y() * quat.y()));
+		float pitch = asin(max(-1.0f, min(1.0f, 2.0f * (quat.w() * quat.y() - quat.z() * quat.x()))));
+		float yaw = atan2(2.0f * (quat.w() * quat.z() + quat.x() * quat.y()),
+			1.0f - 2.0f * (quat.y() * quat.y() + quat.z() * quat.z()));
+		// Convert the floating point angles in radians to a scale from 0 to 18.
+		roll_w = static_cast<int>((roll + (float)M_PI) / (M_PI * 2.0f) * 18);
+		pitch_w = static_cast<int>((pitch + (float)M_PI / 2.0f) / M_PI * 18);
+		yaw_w = static_cast<int>((yaw + (float)M_PI) / (M_PI * 2.0f) * 18);
 	}
 
 	// onPose() is called whenever the Myo detects that the person wearing it has changed their pose, for example,
@@ -76,116 +98,48 @@ public:
 	{
 		isUnlocked = false;
 	}
-
-	bool DetectPose(){
+	void detectPose(){
+		clientSide* client = new clientSide();
+		myo::Pose pose;
+		//Print the current Pose
 		//std::cout << currentPose << std::endl;
 		std::string currPose = currentPose.toString();
-
-		if (currPose == "fist") {
-			
-
-			std::cout << "FIST DETECTED" << std::endl;
-			return true;
+		std::string finalString = "";
+		//If the pose has changed, send the signal activating the command.
+		if (previousPose != currentPose) {
+			std::cout << currentPose << std::endl;
+			//Adding Parentheses
+			finalString += currPose;
+			finalString += ")";
+			std::cout << finalString << std::endl;
+			int result = client->sendSignal(finalString);
+			std::cout << "called sendSignal, Result:" << result << std::endl;
+			previousPose = currentPose;
 		}
-
-
-		
-
+	
 	}
 
-	int sendSignal(std::string input) {
-
-		WSADATA wsaData;
-
-		//Init Winsock Library
-		int iResult;
-		// Initialize Winsock
-		iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-		if (iResult != 0) {
-			printf("WSAStartup failed: %d\n", iResult);
-			return 1;
+	void detectMovement() {
+		clientSide* client = new clientSide();
+		std::string finalString = "";
+		if (prev_yaw != yaw_w && prev_pitch != pitch_w && prev_roll != roll_w) {
+			//This is a really stupid way of doing this!!!
+			finalString += std::to_string(yaw_w);
+			finalString += ",";
+			finalString += std::to_string(pitch_w);
+			finalString += ",";
+			finalString += std::to_string(roll_w);
+			finalString += "}";
+			std::cout << finalString << std::endl;
+			int result = client->sendSignal(finalString);
+			std::cout << "called sendSignal, Result:" << result << std::endl;
+			prev_yaw = yaw_w;
+			prev_pitch = pitch_w;
+			prev_roll = roll_w;
 		}
-
-		struct addrinfo *result = NULL,
-			*ptr = NULL,
-			hints;
-
-		ZeroMemory(&hints, sizeof(hints));
-		hints.ai_family = AF_INET;
-		hints.ai_socktype = SOCK_STREAM;
-		hints.ai_protocol = IPPROTO_TCP;
-		//std::cout << hints.ai_family << std::endl;
-
-		iResult = getaddrinfo("192.168.0.254", "5070", &hints, &result);
-		if (iResult != 0) {
-
-			printf("getaddrinfo failed: %d\n", iResult);
-			WSACleanup();
-			return 1;
-		}
-		SOCKET ConnectSocket = INVALID_SOCKET;
-
-
-		// Attempt to connect to the first address returned by
-		// the call to getaddrinfo
-		ptr = result;
-
-		// Create a SOCKET for connecting to server
-		ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
-			ptr->ai_protocol);
-		if (ConnectSocket == INVALID_SOCKET) {
-			printf("Error at socket(): %ld\n", WSAGetLastError());
-
-			freeaddrinfo(result);
-			WSACleanup();
-
-			std::cout << "Breaks at Connecting Socket to Server \n" << std::endl;
-			return 1;
-		}
-
-		// Connect to server.
-		std::cout << ConnectSocket << std::endl;
-		std::cout << ConnectSocket << std::endl;
-		std::cout << (int)ptr->ai_addrlen << std::endl;
-		iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-		if (iResult == SOCKET_ERROR) {
-			closesocket(ConnectSocket);
-			ConnectSocket = INVALID_SOCKET;
-		}
-
-		// Should really try the next address returned by getaddrinfo
-		// if the connect call failed
-		// But for this simple example we just free the resources
-		// returned by getaddrinfo and print an error message
-
-		freeaddrinfo(result);
-
-		if (ConnectSocket == INVALID_SOCKET) {
-			printf("Unable to connect to server!\n");
-			WSACleanup();
-			std::cout << "Breaks at Connecting Socket to Server \n" << std::endl;
-			return 1;
-		}
-
-
-		std::string sendbuf = input;
-
-		// Send an initial buffer
-		iResult = send(ConnectSocket, sendbuf.c_str(), (int)strlen(sendbuf.c_str()), 0);
-		if (iResult == SOCKET_ERROR) {
-			printf("send failed: %d\n", WSAGetLastError());
-			closesocket(ConnectSocket);
-			WSACleanup();
-			return 1;
-		}
-
-		printf("Bytes Sent: %ld\n", iResult);
-
-		printf("Stopping Point\n");
-
-
-		return 0;
 	}
+
+	
 	// We define this function to print the current values that were updated by the on...() functions above.
 	
 	// These values are set by onArmSync() and onArmUnsync() above.
@@ -197,11 +151,26 @@ public:
 
 	// These values are set by onOrientationData() and onPose() above.
 	myo::Pose currentPose;
+	myo::Pose previousPose;
+	std::string postRecord;
+	int roll_w, pitch_w, yaw_w;
+	int prev_roll, prev_pitch, prev_yaw;
 };
 
 int main(int argc, char** argv)
-{
+{	
+	/*
+	DetectFist collector;
+	collector.detectMovement();
+	std::cout << "Signal Sent" << std::endl;
+	
+	while (true) {
+
+	}
+	*/
+	
 	// We catch any exceptions that might occur below -- see the catch statement for more details.
+	
 	try {
 		
 		myo::Hub hub("com.example.hello-myo");
@@ -218,21 +187,14 @@ int main(int argc, char** argv)
 
 		
 		std::cout << "Connected to a Myo armband!" << std::endl << std::endl;
-
 		DetectFist collector;
-
 		hub.addListener(&collector);
-
 		while (1) {
-			hub.run(1000 / 20);
-			bool check = false;
-			check = collector.DetectPose();
-			if (check == true) {
-				std::string input = "Fist Detected!)";
-				collector.sendSignal(input);
-				break;
-			}
+			hub.run(1000 / 10);
+			collector.detectPose();
+
 		}
+		
 
 	}
 	catch (const std::exception& e) {
@@ -241,4 +203,6 @@ int main(int argc, char** argv)
 		std::cin.ignore();
 		return 1;
 	}
+	
+
 }

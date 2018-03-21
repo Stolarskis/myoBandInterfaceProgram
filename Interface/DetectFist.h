@@ -1,11 +1,11 @@
-#pragma once
+
 
 #include <myo/myo.hpp>
 
 class DataCollector : public myo::DeviceListener {
 public:
 	DataCollector()
-		: onArm(false), isUnlocked(false), roll_w(0), pitch_w(0), yaw_w(0), currentPose()
+		: onArm(false), isUnlocked(false), roll_w(0), pitch_w(0), yaw_w(0), currentPose(),previousPose()
 	{
 	}
 
