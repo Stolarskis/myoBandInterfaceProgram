@@ -7,13 +7,11 @@
   //be sent one character at a time. That is why we have the while loop. sioGet has a very useful function where it will
   //pause the entire program until it recieves a signal. Preventing the while loop from iterating.
   while true
-    nNum = sioGet(sioSocket,nBuffer)
-    putln(nNum)
-    if nNum >= 0
-      if nBuffer != 0
-        putln("dataGet called")
-        call dataGet()
-      endIf
+    nNum=sioGet(sioSocket,nBuffer)
+    //putln(nNum)
+    if nNum>=0
+      //putln("dataGet called")
+      call dataGet()
     endIf
   endWhile
 end]]></Code>

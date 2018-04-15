@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="parseMovement">
+    <Code><![CDATA[begin
+  //putln(sInput)
+  sGetMovement=sInput[0]
+
+  sGetMovement=toNum(sGetMovement,nXMovement,bParseResult)
+  sGetMovement=toNum(sGetMovement,nZMovement,bParseResult)
+  sGetMovement=toNum(sGetMovement,nRXMovement,bParseResult)
+
+  //putln(nXMovement)
+  //putln(nZMovement)
+  //putln(nRXMovement)
+
+  call actMovement()
+end]]></Code>
+  </Program>
+</Programs>

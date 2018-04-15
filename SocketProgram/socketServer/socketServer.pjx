@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://www.staubli.com/robotics/VAL3/Project/3" >
+  <Parameters version="s7.9.1" stackSize="5000" millimeterUnit="true" />
+  <Programs>
+    <Program file="actGesture.pgx" />
+    <Program file="actMovement.pgx" />
+    <Program file="dataGet.pgx" />
+    <Program file="detectInput.pgx" />
+    <Program file="gestureFist.pgx" />
+    <Program file="gestureSpread.pgx" />
+    <Program file="gestureWaveIn.pgx" />
+    <Program file="gestureWaveout.pgx" />
+    <Program file="parseMovement.pgx" />
+    <Program file="start.pgx" />
+    <Program file="stop.pgx" />
+  </Programs>
+  <Database>
+    <Data file="socketServer.dtx" />
+  </Database>
+  <Libraries>
+  </Libraries>
+  <Types>
+  </Types>
+</Project>

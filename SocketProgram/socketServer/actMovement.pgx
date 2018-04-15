@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="actMovement">
+    <Code><![CDATA[begin
+  putln(nXMovement)
+  putln(nZMovement)
+  putln(nRXMovement)
+
+  if nXMovement > 80
+    nXMovement = 80
+  elseIf nXMovement < -80
+    nXMovement = -80
+  endIf
+  
+  if nZMovement > 80
+    nZMovement = 80
+  elseIf nZMovement < -80
+    nZMovement = -80
+  endIf
+  
+  if nRXMovement > 80
+    nRXMovement = 80
+  elseIf nRXMovement < -80
+    nRXMovement = -80
+  endIf
+  
+  homePointArray[0] = nXMovement
+  homePointArray[2] = nZMovement
+  homePointArray[3] = nRXMovement
+  
+  
+  homePointCopy = {homePointArray[0],homePointArray[1],homePointArray[2],homePointArray[3],homePointArray[4],homePointArray[5]}
+  
+  movej(homePointCopy,tClaw,nom_speed)
+  //waveIn[0] =
+  //waveIn[1] = 
+
+
+
+end]]></Code>
+  </Program>
+</Programs>

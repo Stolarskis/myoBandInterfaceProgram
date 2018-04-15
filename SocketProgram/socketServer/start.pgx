@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="start" access="public">
+    <Code><![CDATA[begin
+  
+  // The start function's purpose is to make sure everything is reset and setup
+  // It starts by initing a few variables the program uses then moving the arm to the homePoint
+  
+  
+  //initing a few variables
+  nBuffer=0
+  nNum=0
+  nFailCounter=0
+  bDetectInput=false
+  sInput=""
+  
+  //Set the arm at the homePoint
+  movej(homePoint,tClaw,nom_speed)
+  waitEndMove()
+  //call enablePowerTest() 
+  call detectInput()
+end]]></Code>
+  </Program>
+</Programs>

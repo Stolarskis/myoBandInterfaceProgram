@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
-  <Program name="parseMovement">
+  <Program name="gestureWaveIn">
     <Code><![CDATA[begin
-  putln(sInput) 
+  putln("WaveInCAlled")
+  joint1TestCopy = joint1Test
+  movej(joint1Test,tClaw,nom_speed)
 end]]></Code>
   </Program>
 </Programs>
